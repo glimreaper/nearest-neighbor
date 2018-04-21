@@ -13,13 +13,15 @@ parser.add_argument('--profile',action='store_true')
 parser.add_argument('filename',metavar='<filename>',\
     help='Input dataset of points')
 
+def dist(p0,p1):
+    return (((p0[0] - p1[0])**2) + ((p0[1] - p1[1])**2))**.5
 #Divide and conquer version of the nearest neighbor algorithm
 #Input: points := unsorted array of (x,y) coordinates
 #Output: tuple of smallest distance and coordinates (distance,(x1,y1),(x2,y2))
 def divideAndConquerNearestNeighbor(points):
     minimum_distance = 0;
-    point1 = (-1,-1)
-    point2 = (-1,-1)
+    point1 = (-1, -1)
+    point2 = (-1, -1)
     #TODO: Complete this function
     print("Divide and Conquer algorithm is incomplete")
     return (minimum_distance,point1,point2)
@@ -30,11 +32,23 @@ def divideAndConquerNearestNeighbor(points):
 #   [(x,y),(x,y),...,(x,y)]
 #Output: tuple of smallest distance and coordinates (distance,(x1,y1),(x2,y2))
 def bruteForceNearestNeighbor(points):
-    minimum_distance = 0;
-    point1 = (-1,-1)
-    point2 = (-1,-1)
+    minimum_distance = 0
+    point1 = (-1, -1)
+    point2 = (-1, -1)
     #TODO: Complete this function
-    print("Brute force algorithm is incomplete")
+    minimum_distance = dist(points[0], points[1])
+    point1 = points[0]
+    point2 = points[1]
+    for x in range(len(points)-1):
+        for y in range(x+1, len(points)):
+            if dist(points[x], points[y]) < minimum_distance:
+                minimum_distance = dist(points[x], points[y])
+                point1 = points[x]
+                point2 = points[y]
+            #endif
+        #endfor
+    #endfor
+    print("Brute force algorithm is complete")
     return (minimum_distance,point1,point2)
 #end def brute_force_nearest_neighbor(points):
 
