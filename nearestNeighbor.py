@@ -3,6 +3,7 @@ import os
 import sys
 import time
 import profile
+from operator import itemgetter 
 
 # Command line arguments
 parser=argparse.ArgumentParser(description='Calculate the nearest two points on a plan')
@@ -19,21 +20,22 @@ def dist(p0,p1):
 #Input: points := unsorted array of (x,y) coordinates
 #Output: tuple of smallest distance and coordinates (distance,(x1,y1),(x2,y2))
 def divAndConquerRecursive(points):
+
     if len(points) < 3:
         return bruteForceNearestNeighbor(points)
-    #BOTTOM PART CAN'T WORK UNTIL POINTS ARE SORTED BASED ON THEIR X VALUES
-
     
     midIndex = int(len(points)/2)
     midPoint = points[midIndex]
-    leftHalf = divAndConquerRecursive(points[:len(points/2)])
-    rightHalf = divAndConquerRecursive(points[len(points/2):])
+    print(points[:midIndex])
+    print(points[midIndex:])
+    leftHalf = divAndConquerRecursive(points[:midIndex])
+    rightHalf = divAndConquerRecursive(points[midIndex:])
     if leftHalf[0] < rightHalf[0]:
         smaller = leftHalf[0]
     else:
         smaller = rightHalf[0]
 
-    #createing an array that holds points whos distance to the line in the middle point is lower than 'smaller' variable above
+    #creating an array that holds points whos distance to the line in the middle point is lower than 'smaller' variable above
     middleHalf = [0] * len(points)
     i = 0
     for x in range(len(middleHalf)):
@@ -43,11 +45,9 @@ def divAndConquerRecursive(points):
     return divAndConquerRecursive(middleHalf)
 
 def divideAndConquerNearestNeighbor(points):
-    points.sort()
+    points.sort(key=itemgetter(0))
     results = divAndConquerRecursive(points)
     #TODO: Complete this function
-    
-
 
     print("Divide and Conquer algorithm is incomplete")
     return (results[0],results[1],results[2])
