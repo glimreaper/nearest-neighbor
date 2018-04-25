@@ -18,13 +18,39 @@ def dist(p0,p1):
 #Divide and conquer version of the nearest neighbor algorithm
 #Input: points := unsorted array of (x,y) coordinates
 #Output: tuple of smallest distance and coordinates (distance,(x1,y1),(x2,y2))
+def divAndConquerRecursive(points):
+    if len(points) < 3:
+        return bruteForceNearestNeighbor(points)
+    #BOTTOM PART CAN'T WORK UNTIL POINTS ARE SORTED BASED ON THEIR X VALUES
+
+    
+    midIndex = int(len(points)/2)
+    midPoint = points[midIndex]
+    leftHalf = divAndConquerRecursive(points[:len(points/2)])
+    rightHalf = divAndConquerRecursive(points[len(points/2):])
+    if leftHalf[0] < rightHalf[0]:
+        smaller = leftHalf[0]
+    else:
+        smaller = rightHalf[0]
+
+    #createing an array that holds points whos distance to the line in the middle point is lower than 'smaller' variable above
+    middleHalf = [0] * len(points)
+    i = 0
+    for x in range(len(middleHalf)):
+        if dist(points[x], midPoint) < smaller:
+            middleHalf[i] = points[x]
+            i = i+1
+    return divAndConquerRecursive(middleHalf)
+
 def divideAndConquerNearestNeighbor(points):
-    minimum_distance = 0;
-    point1 = (-1, -1)
-    point2 = (-1, -1)
+    points.sort()
+    results = divAndConquerRecursive(points)
     #TODO: Complete this function
+    
+
+
     print("Divide and Conquer algorithm is incomplete")
-    return (minimum_distance,point1,point2)
+    return (results[0],results[1],results[2])
 #end def divide_and_conquer(points):
 
 #Brute force version of the nearest neighbor algorithm
