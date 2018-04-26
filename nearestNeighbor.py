@@ -19,9 +19,22 @@ def dist(p0,p1):
 #Divide and conquer version of the nearest neighbor algorithm
 #Input: points := unsorted array of (x,y) coordinates
 #Output: tuple of smallest distance and coordinates (distance,(x1,y1),(x2,y2))
+def closestY(points, size, minDist):
+    point1 = (-1,-1)
+    point2 = (-1,-1)
+    min = minDist
+    points.sort(key=itemgetter(1))
+    for i in range(size):
+        for j in range(i+1,size):
+            if (points[j][1] - points[i][1] < min) and (dist(points[i], points[j]) < min):
+                min = dist(points[i], points[j])
+                point1 = points[i]
+                point2 = points[j]
+    return (min, point1, point2) 
+
 def divAndConquerRecursive(points):
 
-    if len(points) < 3:
+    if len(points) <= 3:
         return bruteForceNearestNeighbor(points)
     
     midIndex = int(len(points)/2)
@@ -31,18 +44,21 @@ def divAndConquerRecursive(points):
     leftHalf = divAndConquerRecursive(points[:midIndex])
     rightHalf = divAndConquerRecursive(points[midIndex:])
     if leftHalf[0] < rightHalf[0]:
-        smaller = leftHalf[0]
+        smaller = leftHalf
     else:
-        smaller = rightHalf[0]
+        smaller = rightHalf
 
     #creating an array that holds points whos distance to the line in the middle point is lower than 'smaller' variable above
     middleHalf = [0] * len(points)
     i = 0
     for x in range(len(middleHalf)):
-        if dist(points[x], midPoint) < smaller:
+        if abs(points[x][0] - midPoint[0]) < smaller[0]:
             middleHalf[i] = points[x]
             i = i+1
-    return divAndConquerRecursive(middleHalf)
+    if smaller[0] < closestY(middleHalf, i, smaller[0])[0]:
+        return smaller
+    else:
+        return closestY(middleHalf, i, smaller[0]) 
 
 def divideAndConquerNearestNeighbor(points):
     points.sort(key=itemgetter(0))
@@ -62,6 +78,8 @@ def bruteForceNearestNeighbor(points):
     point1 = (-1, -1)
     point2 = (-1, -1)
     #TODO: Complete this function
+    print(points[0])
+    print(points[1])
     minimum_distance = dist(points[0], points[1])
     point1 = points[0]
     point2 = points[1]
