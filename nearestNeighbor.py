@@ -23,7 +23,10 @@ def closestY(points, size, minDist):
     point1 = (-1,-1)
     point2 = (-1,-1)
     min = minDist
+    print("points")
+    print(points)
     points.sort(key=itemgetter(1))
+    print("hi")
     for i in range(size):
         for j in range(i+1,size):
             if (points[j][1] - points[i][1] < min) and (dist(points[i], points[j]) < min):
@@ -49,11 +52,11 @@ def divAndConquerRecursive(points):
         smaller = rightHalf
 
     #creating an array that holds points whos distance to the line in the middle point is lower than 'smaller' variable above
-    middleHalf = [0] * len(points)
+    middleHalf = []
     i = 0
     for x in range(len(middleHalf)):
         if abs(points[x][0] - midPoint[0]) < smaller[0]:
-            middleHalf[i] = points[x]
+            middleHalf.append(points[x])
             i = i+1
     if smaller[0] < closestY(middleHalf, i, smaller[0])[0]:
         return smaller
