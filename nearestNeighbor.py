@@ -20,19 +20,20 @@ def dist(p0,p1):
 #Input: points := unsorted array of (x,y) coordinates
 #Output: tuple of smallest distance and coordinates (distance,(x1,y1),(x2,y2))
 def closestY(points, size, minDist):
-    point1 = (-1,-1)
-    point2 = (-1,-1)
-    min = minDist
-    print("points")
-    print(points)
+    min = minDist[0]
+    point1 = minDist[1]
+    point2 = minDist[2]
     points.sort(key=itemgetter(1))
-    print("hi")
     for i in range(size):
         for j in range(i+1,size):
-            if (points[j][1] - points[i][1] < min) and (dist(points[i], points[j]) < min):
+            if (dist(points[i], points[j]) < min):
                 min = dist(points[i], points[j])
                 point1 = points[i]
                 point2 = points[j]
+    if point1[0] > point2[0]:
+        temp = point1
+        point1 = point2
+        point2 = temp
     return (min, point1, point2) 
 
 def divAndConquerRecursive(points):
@@ -42,33 +43,30 @@ def divAndConquerRecursive(points):
     
     midIndex = int(len(points)/2)
     midPoint = points[midIndex]
-    print(points[:midIndex])
-    print(points[midIndex:])
     leftHalf = divAndConquerRecursive(points[:midIndex])
     rightHalf = divAndConquerRecursive(points[midIndex:])
     if leftHalf[0] < rightHalf[0]:
         smaller = leftHalf
     else:
         smaller = rightHalf
-
     #creating an array that holds points whos distance to the line in the middle point is lower than 'smaller' variable above
     middleHalf = []
     i = 0
-    for x in range(len(middleHalf)):
+    for x in range(len(points)):
         if abs(points[x][0] - midPoint[0]) < smaller[0]:
             middleHalf.append(points[x])
             i = i+1
-    if smaller[0] < closestY(middleHalf, i, smaller[0])[0]:
+    if smaller[0] < closestY(middleHalf, i, smaller)[0]:
         return smaller
     else:
-        return closestY(middleHalf, i, smaller[0]) 
+        return closestY(middleHalf, i, smaller) 
 
 def divideAndConquerNearestNeighbor(points):
     points.sort(key=itemgetter(0))
     results = divAndConquerRecursive(points)
     #TODO: Complete this function
 
-    print("Divide and Conquer algorithm is incomplete")
+    print("Divide and Conquer algorithm is complete")
     return (results[0],results[1],results[2])
 #end def divide_and_conquer(points):
 
@@ -81,8 +79,6 @@ def bruteForceNearestNeighbor(points):
     point1 = (-1, -1)
     point2 = (-1, -1)
     #TODO: Complete this function
-    print(points[0])
-    print(points[1])
     minimum_distance = dist(points[0], points[1])
     point1 = points[0]
     point2 = points[1]
@@ -95,6 +91,10 @@ def bruteForceNearestNeighbor(points):
             #endif
         #endfor
     #endfor
+    if point1[0] > point2[0]:
+        temp = point1
+        point1 = point2
+        point2 = temp
     print("Brute force algorithm is complete")
     return (minimum_distance,point1,point2)
 #end def brute_force_nearest_neighbor(points):
@@ -131,7 +131,8 @@ def main(filename,algorithm):
             print('Divide and conquer result: '+str(divideAndConquerResult))
             print('Algorithms produce the same result? '+str(bruteForceResult == divideAndConquerResult))
         result = bruteForceResult if bruteForceResult == divideAndConquerResult else ('Error','N/A','N/A')
-    else:  
+    else:
+        print("hijoj")  
         result = bruteForceResult if bruteForceResult is not None else divideAndConquerResult
     with open(os.path.splitext(filename)[0]+'_distance.txt','w') as f:
         f.write(str(result[1])+'\n')
