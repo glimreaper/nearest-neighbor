@@ -3,6 +3,7 @@ import os
 import sys
 import time
 import profile
+import cProfile
 from operator import itemgetter 
 
 # Command line arguments
@@ -66,7 +67,6 @@ def divideAndConquerNearestNeighbor(points):
     results = divAndConquerRecursive(points)
     #TODO: Complete this function
 
-    print("Divide and Conquer algorithm is complete")
     return (results[0],results[1],results[2])
 #end def divide_and_conquer(points):
 
@@ -75,17 +75,15 @@ def divideAndConquerNearestNeighbor(points):
 #   [(x,y),(x,y),...,(x,y)]
 #Output: tuple of smallest distance and coordinates (distance,(x1,y1),(x2,y2))
 def bruteForceNearestNeighbor(points):
-    minimum_distance = 0
-    point1 = (-1, -1)
-    point2 = (-1, -1)
     #TODO: Complete this function
     minimum_distance = dist(points[0], points[1])
     point1 = points[0]
     point2 = points[1]
     for x in range(len(points)-1):
         for y in range(x+1, len(points)):
-            if dist(points[x], points[y]) < minimum_distance:
-                minimum_distance = dist(points[x], points[y])
+            tempDist = dist(points[x], points[y])
+            if tempDist < minimum_distance:
+                minimum_distance = tempDist
                 point1 = points[x]
                 point2 = points[y]
             #endif
@@ -95,7 +93,6 @@ def bruteForceNearestNeighbor(points):
         temp = point1
         point1 = point2
         point2 = temp
-    print("Brute force algorithm is complete")
     return (minimum_distance,point1,point2)
 #end def brute_force_nearest_neighbor(points):
 
@@ -121,9 +118,13 @@ def main(filename,algorithm):
     result = bruteForceResult = divideAndConquerResult = None
     if algorithm == 'a' or algorithm == 'b':
         #TODO: Insert timing code here
+
+        cProfile.runctx('bruteForceNearestNeighbor(points)', globals=globals(), locals=locals())
         bruteForceResult = bruteForceNearestNeighbor(points)
     if algorithm == 'a' or algorithm == 'd':
         #TODO: Insert timing code here
+
+        cProfile.runctx('divideAndConquerNearestNeighbor(points)', globals=globals(), locals=locals())
         divideAndConquerResult = divideAndConquerNearestNeighbor(points)
     if algorithm == 'a': # Print whether the results are equal (check)
         if args.verbose:
@@ -131,8 +132,7 @@ def main(filename,algorithm):
             print('Divide and conquer result: '+str(divideAndConquerResult))
             print('Algorithms produce the same result? '+str(bruteForceResult == divideAndConquerResult))
         result = bruteForceResult if bruteForceResult == divideAndConquerResult else ('Error','N/A','N/A')
-    else:
-        print("hijoj")  
+    else:  
         result = bruteForceResult if bruteForceResult is not None else divideAndConquerResult
     with open(os.path.splitext(filename)[0]+'_distance.txt','w') as f:
         f.write(str(result[1])+'\n')
